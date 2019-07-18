@@ -17,6 +17,7 @@
 
 import collections
 import json
+import yaml
 import re
 
 import marshmallow as mm
@@ -302,7 +303,11 @@ class CollectionArtifactManifest(object):
 
     @classmethod
     def parse(cls, data):
-        meta = json.loads(data)
+        try:
+            meta = json.loads(data)
+        except Exception:
+            meta = yaml.safe_load(data)
+
         col_info = meta.pop('collection_info', None)
         meta['collection_info'] = GalaxyCollectionInfo(**col_info)
         return cls(**meta)

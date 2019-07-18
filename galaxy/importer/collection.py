@@ -88,8 +88,15 @@ class CollectionLoader(object):
         )
 
     def _load_collection_manifest(self):
-        manifest_file = os.path.join(self.path, 'MANIFEST.json')
-        if not os.path.exists(manifest_file):
+
+        manifest_file = None
+        for manifest in ('MANIFEST.json', 'galaxy.yml'):
+            mfile = os.path.exists(self.path, manifest)
+            if os.path.exists(mfile):
+                manifest_file = mfile
+                break
+
+        if not manifest_file or not os.path.exists(manifest_file):
             raise exc.ManifestNotFound('No manifest found in collection')
 
         with open(manifest_file, 'r') as f:
